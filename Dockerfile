@@ -11,13 +11,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
     poppler-utils \
-    libgl1-mesa-glx \
+    libgl1 \
     libglib2.0-0 \
     libgomp1 \
     libcairo2 \
     libpango-1.0-0 \
     libpangocairo-1.0-0 \
-    libgdk-pixbuf2.0-0 \
+    libgdk-pixbuf-2.0-0 \
     shared-mime-info \
     tesseract-ocr \
     tesseract-ocr-ara \
