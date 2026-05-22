@@ -27,6 +27,8 @@ class Document(Base):
     filename = Column(String(255), nullable=False)
     content_type = Column(String(127), nullable=False)
     storage_path = Column(String(512), nullable=False)
+    pdf_type = Column(String(32), nullable=True)
+    total_pages = Column(Integer, nullable=True)
     status = Column(SQLEnum(DocumentStatus), nullable=False, default=DocumentStatus.uploaded)
     progress = Column(Integer, nullable=False, default=0)
     error_message = Column(Text, nullable=True)

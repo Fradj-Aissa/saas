@@ -3,8 +3,13 @@ from datetime import date
 from typing import Any, Dict, List, Optional, Tuple
 
 import structlog
-from google.cloud import vision_v1
-from google.cloud.vision_v1 import ImageAnnotatorClient
+
+try:
+    from google.cloud import vision_v1
+    from google.cloud.vision_v1 import ImageAnnotatorClient
+except ImportError:
+    vision_v1 = None  # type: ignore
+    ImageAnnotatorClient = None  # type: ignore
 
 from app.core.config import Settings
 
@@ -14,6 +19,9 @@ _client: Optional[ImageAnnotatorClient] = None
 
 
 def _get_client() -> ImageAnnotatorClient:
+    if vision_v1 is None or ImageAnnotatorClient is None:
+        raise ImportError("google-cloud-vision is not installed")
+
     global _client
     if _client is None:
         _client = vision_v1.ImageAnnotatorClient()
@@ -21,7 +29,7 @@ def _get_client() -> ImageAnnotatorClient:
     return _client
 
 
-def _calculate_confidence(annotation: vision_v1.types.TextAnnotation) -> float:
+def _calculate_confidence(annotation: Any) -> float:
     confidences: List[float] = []
     for page in annotation.pages:
         for block in page.blocks:

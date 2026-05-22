@@ -1,9 +1,8 @@
 ﻿import asyncio
 import logging
 import os
-from typing import List
+from typing import List, Optional
 
-import google.generativeai as genai
 import structlog
 
 from app.ai.gemini.prompts import ARABIC_MARKDOWN_PROMPT
@@ -14,16 +13,26 @@ logger = structlog.get_logger()
 
 class GeminiClient:
     def __init__(self) -> None:
-        api_key = os.getenv("GOOGLE_API_KEY")
-        if api_key:
-            genai.configure(api_key=api_key)
+        self.genai = None
         self.token_usage: List[int] = []
+        api_key = os.getenv("GOOGLE_API_KEY")
+        try:
+            import google.generativeai as genai
+
+            self.genai = genai
+            if api_key:
+                self.genai.configure(api_key=api_key)
+        except ImportError:
+            logger.warning("gemini_client_not_installed")
 
     async def _send_chunk(self, chunk: str) -> str:
+        if self.genai is None:
+            raise RuntimeError("Gemini client library is not available")
+
         for attempt in range(1, 4):
             try:
                 response = await asyncio.to_thread(
-                    lambda: genai.ChatCompletion.create(
+                    lambda: self.genai.ChatCompletion.create(
                         model="gemini-pro",
                         messages=[
                             {"role": "user", "content": ARABIC_MARKDOWN_PROMPT.format(content=chunk)}
