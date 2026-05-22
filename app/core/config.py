@@ -25,7 +25,3 @@ class Settings(BaseSettings):
     google_credentials_path: Optional[Path] = Field(None, env="GOOGLE_APPLICATION_CREDENTIALS")
     google_vision_max_calls_per_document: int = Field(10, env="GOOGLE_VISION_MAX_CALLS_PER_DOCUMENT")
     google_vision_max_calls_per_day: int = Field(1000, env="GOOGLE_VISION_MAX_CALLS_PER_DAY")
-
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
