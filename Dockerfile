@@ -33,7 +33,7 @@ RUN python -m pip install --no-cache-dir --upgrade pip \
 COPY . .
 
 RUN mkdir -p storage
-RUN useradd -u 8888 appuser && chown -R appuser:appuser /backend
+RUN useradd -m -u 8888 appuser && chown -R appuser:appuser /backend
 USER appuser
 
 EXPOSE 8000
